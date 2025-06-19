@@ -1,9 +1,9 @@
-package com.example.fpoebatallanaval;
+package com.example.fpoebatallanaval.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class MenuController {
     @FXML
     private Label welcomeText;
 
