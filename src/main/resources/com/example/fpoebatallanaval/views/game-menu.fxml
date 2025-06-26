@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fpoebatallanaval.controller.MenuController">
    <children>
       <ImageView fitHeight="672.0" fitWidth="750.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -36,7 +36,7 @@
       </Label>
       <VBox alignment="CENTER" layoutX="200.0" layoutY="336.0" prefHeight="336.0" prefWidth="270.0" spacing="30.0">
          <children>
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: linear-gradient(to bottom, #005b9f, #003e73); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="Jugar ⚓ ">
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#OnActionJugarButton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: linear-gradient(to bottom, #005b9f, #003e73); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="Jugar ⚓ ">
                <font>
                   <Font size="18.0" />
                </font>
@@ -44,7 +44,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom, #005b9f, #003e73); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="Instrucciones ❓">
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#OnActionDebugButton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: linear-gradient(to bottom, #005b9f, #003e73); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="debug ⚓ ">
                <font>
                   <Font size="18.0" />
                </font>
@@ -52,7 +52,15 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" style="-fx-background-color: linear-gradient(to bottom, #005b9f, #003e73); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="Salir ❌">
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#OnActionInstruccionesButton" prefHeight="40.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom, #005b9f, #003e73); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="Instrucciones ❓">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#OnActionSalirButton" style="-fx-background-color: linear-gradient(to bottom, #005b9f, #003e73); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" text="Salir ❌">
                <font>
                   <Font size="18.0" />
                </font>
