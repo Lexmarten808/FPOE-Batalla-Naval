@@ -15,8 +15,8 @@
             <Image url="@../images/batalla%20naval.png" />
          </image>
       </ImageView>
-      <VBox layoutX="14.0" layoutY="142.0" prefHeight="359.0" prefWidth="310.0" />
-      <VBox layoutX="381.0" layoutY="142.0" prefHeight="359.0" prefWidth="310.0" />
+      <VBox fx:id="PlayerGridId" layoutX="14.0" layoutY="142.0" prefHeight="359.0" prefWidth="310.0" />
+      <VBox fx:id="MachineGridId" layoutX="381.0" layoutY="142.0" prefHeight="359.0" prefWidth="310.0" />
       <Label fx:id="NicknameId" layoutX="14.0" layoutY="14.0" prefHeight="30.0" prefWidth="166.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Nickname: " textFill="WHITESMOKE">
          <effect>
             <Glow />

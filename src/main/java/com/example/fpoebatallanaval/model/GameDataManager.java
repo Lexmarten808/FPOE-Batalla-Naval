@@ -47,7 +47,7 @@ public class GameDataManager {
 
         return currentNickname;
     }
-
+    //devuelve el nombre del jugador
     public static String getCurrentNickname() {
         return currentNickname;
     }
@@ -94,4 +94,9 @@ public class GameDataManager {
             e.printStackTrace();
         }
     }
+    //revisa si existe ese jugador en el mapa de players.txt
+    public static boolean playerExists(String nickname) {
+        return playerStats.containsKey(nickname);
+    }
+
 }
