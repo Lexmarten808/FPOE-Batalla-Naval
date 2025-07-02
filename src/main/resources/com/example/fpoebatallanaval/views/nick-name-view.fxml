@@ -15,7 +15,10 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="200.0" layoutY="173.0" prefHeight="26.0" prefWidth="198.0" />
+      <TextField fx:id="nicknameInput" layoutX="200.0" layoutY="173.0" prefHeight="26.0" prefWidth="198.0">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor></TextField>
       <Button layoutX="266.0" layoutY="247.0" mnemonicParsing="false" onAction="#OnActionContinuarButton" style="-fx-background-color: #3B6E8F;" text="Continuar" textFill="WHITESMOKE">
          <effect>
             <DropShadow />
@@ -24,5 +27,36 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
+      <AnchorPane fx:id="continuePane" layoutX="163.0" layoutY="94.0" prefHeight="183.0" prefWidth="260.0" style="-fx-background-color: #0A2342; -fx-background-radius: 10;" visible="false">
+         <children>
+            <Button layoutX="18.0" layoutY="140.0" mnemonicParsing="false" onAction="#OnActionContinueGame" prefHeight="26.0" prefWidth="89.0" style="-fx-background-color: #3B6E8F; -fx-background-radius: 20;" text="continue" textFill="WHITESMOKE" AnchorPane.bottomAnchor="17.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Button>
+            <Button layoutX="157.0" layoutY="140.0" mnemonicParsing="false" onAction="#OnActionNewGame" style="-fx-background-color: #3B6E8F; -fx-background-radius: 20;" text="nueva partida" textFill="WHITESMOKE" AnchorPane.bottomAnchor="17.599999999999994">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Button>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="53.0" layoutY="29.0" prefHeight="55.0" prefWidth="154.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text="tienes una partida reciente &#10;      ¿deseas continuar?" textAlignment="JUSTIFY" textFill="WHITESMOKE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+         </children>
+         <effect>
+            <DropShadow />
+         </effect>
+      </AnchorPane>
    </children>
 </AnchorPane>

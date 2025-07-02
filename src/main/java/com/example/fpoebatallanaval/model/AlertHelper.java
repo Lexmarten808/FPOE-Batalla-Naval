@@ -50,7 +50,7 @@ public class AlertHelper {
             dialogPane.setMinHeight(Region.USE_PREF_SIZE);
             dialogPane.setMinWidth(520);
 
-            // Set the window icon fot he alert
+            // Set the window icon fot the alert
             Stage stage = (Stage) dialogPane.getScene().getWindow();
            // stage.getIcons().add(new Image(Main.class.getResourceAsStream("images/icons/uno-logo.png")));
 
