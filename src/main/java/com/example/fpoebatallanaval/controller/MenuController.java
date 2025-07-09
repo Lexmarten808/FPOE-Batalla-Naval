@@ -1,20 +1,21 @@
 package com.example.fpoebatallanaval.controller;
 
 import com.example.fpoebatallanaval.model.AlertHelper;
-import com.example.fpoebatallanaval.view.NickNameView;
+import com.example.fpoebatallanaval.views.NicknameView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class MenuController {
     @FXML
     private Label welcomeText;
 
-
     @FXML
-    void OnActionInstruccionesButton(ActionEvent event) {
+    void onActionButtonInstrucciones(ActionEvent event) {
         System.out.println("Mostrando instrucciones...");
         AlertHelper.showInfoAlert("","","\n" +
                 "Objetivo del juego:\n" +
@@ -45,25 +46,39 @@ public class MenuController {
     }
 
     @FXML
-    void OnActionJugarButton(ActionEvent event) {
+    void onActionButtonNuevaPartida(ActionEvent event) throws IOException {
+        System.out.println("Iniciando juego...");
+
+        // Load the nickname view (singleton)
+        NicknameView nicknameView = NicknameView.getInstance();
+        nicknameView.show();
+
+        // Close the current menun window
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
+    }
+
+    @FXML
+    void onActionButtonCargarPartida(ActionEvent event) {
         System.out.println("Iniciando juego...");
         //close current stage
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.close();
         //loads the nickname stage
         Stage stage = new Stage();
-        NickNameView.getInstance().show(stage);
+        // NicknameView.getInstance().show(stage);
 
     }
+
     @FXML
-    void OnActionDebugButton(ActionEvent event) {
+    void onActionButtonModoMaestro(ActionEvent event) {
         System.out.println("iniciando modo debug ...");
 
 
     }
 
     @FXML
-    void OnActionSalirButton(ActionEvent event) {
+    void onActionButtonSalir(ActionEvent event) {
         System.out.println("Saliendo del juego...");
         //close current stage
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class GameBattleController {
+public class GameController {
     @FXML
     private Label BarcoshundidosId;
 
@@ -30,7 +30,7 @@ public class GameBattleController {
         String nickname = GameDataManager.getCurrentNickname();
         int totalHundidos = GameDataManager.getBarcosHundidos(nickname);
 
-        NicknameId.setText("Jugador: " + nickname);
+        NicknameId.setText("");
         totalBarcosHundidosId.setText("Total hundidos: " + totalHundidos);
 
         // Por ahora, dejamos este en 0 hasta que tengas la lógica de disparos
