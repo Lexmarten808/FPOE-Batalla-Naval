@@ -1,6 +1,6 @@
 package com.example.fpoebatallanaval.controller;
 
-import com.example.fpoebatallanaval.model.AlertHelper;
+import com.example.fpoebatallanaval.models.AlertHelper;
 import com.example.fpoebatallanaval.views.NicknameView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

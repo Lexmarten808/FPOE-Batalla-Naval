@@ -5,7 +5,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="600.0" maxWidth="1000.0" minHeight="600.0" minWidth="1000.0" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fpoebatallanaval.controller.GameController">
@@ -15,9 +14,7 @@
             <Image url="@../images/batalla-naval.png" />
          </image>
       </ImageView>
-      <VBox fx:id="PlayerGridId" layoutX="14.0" layoutY="142.0" prefHeight="359.0" prefWidth="310.0" />
-      <VBox fx:id="MachineGridId" layoutX="381.0" layoutY="142.0" prefHeight="359.0" prefWidth="310.0" />
-      <Label fx:id="NicknameId" layoutX="14.0" layoutY="14.0" prefHeight="30.0" prefWidth="166.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Nickname: " textFill="WHITESMOKE">
+      <Label fx:id="NicknameId" layoutX="30.0" layoutY="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Nickname: " textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -25,7 +22,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="BarcoshundidosId" layoutX="524.0" layoutY="14.0" prefHeight="30.0" prefWidth="166.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Barcos hundidos: " textFill="WHITESMOKE">
+      <Label fx:id="BarcoshundidosId" layoutX="770.0" layoutY="30.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Barcos hundidos: " textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -33,7 +30,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="587.0" layoutY="547.0" prefHeight="30.0" prefWidth="71.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Agua ❌ " textFill="WHITESMOKE">
+      <Label layoutX="680.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Agua ❌ " textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -41,7 +38,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="701.0" layoutY="547.0" prefHeight="30.0" prefWidth="71.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Tocado 💣" textFill="WHITESMOKE">
+      <Label layoutX="780.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Tocado 💣" textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -49,7 +46,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="828.0" layoutY="547.0" prefHeight="30.0" prefWidth="71.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Hundido 🔥" textFill="WHITESMOKE">
+      <Label layoutX="880.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Hundido 🔥" textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -57,7 +54,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label fx:id="totalBarcosHundidosId" layoutX="51.0" layoutY="547.0" prefHeight="30.0" prefWidth="194.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" ⚓ Total de Barcos hundidos: " textFill="WHITESMOKE">
+      <Label fx:id="totalBarcosHundidosId" layoutX="30.0" layoutY="540.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" ⚓ Total de Barcos hundidos: " textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -65,5 +62,6 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
+      <AnchorPane fx:id="GameCanvasContainer" layoutX="80.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0" />
    </children>
 </AnchorPane>

@@ -1,8 +1,7 @@
-package com.example.fpoebatallanaval.model;
+package com.example.fpoebatallanaval.models;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.DialogPane;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 

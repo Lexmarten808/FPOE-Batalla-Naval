@@ -1,4 +1,4 @@
-package com.example.fpoebatallanaval.model;
+package com.example.fpoebatallanaval.models;
 
 import java.io.*;
 import java.util.HashMap;

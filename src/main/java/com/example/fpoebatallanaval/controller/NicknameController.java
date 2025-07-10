@@ -1,7 +1,5 @@
 package com.example.fpoebatallanaval.controller;
 
-import com.example.fpoebatallanaval.model.AlertHelper;
-import com.example.fpoebatallanaval.model.GameDataManager;
 import com.example.fpoebatallanaval.views.GameView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

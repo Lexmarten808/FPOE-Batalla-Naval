@@ -2,6 +2,7 @@ module com.example.fpoebatallanaval {
     requires javafx.controls;
     requires javafx.fxml;
     requires jdk.compiler;
+    requires java.desktop;
 
 
     opens com.example.fpoebatallanaval to javafx.fxml;
