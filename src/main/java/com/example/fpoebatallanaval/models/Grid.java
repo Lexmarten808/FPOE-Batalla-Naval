@@ -74,13 +74,18 @@ public class Grid extends Rectangle implements Serializable {
      * @param gc Contexto gráfico para pintar en el canvas.
      */
     public void paint(GraphicsContext gc) {
+        drawMarkers(gc);
+        drawGrid(gc);
+
         for (Ship ship : ships) {
+
+
             if (showShips || ship.isDestroyed()) {
+                System.out.println("Dibujando barcos del grid en: " + position.x + "," + position.y);
                 ship.paint(gc);
             }
         }
-        drawMarkers(gc);
-        drawGrid(gc);
+
     }
 
     public void setShowShips(boolean showShips) { this.showShips = showShips; }

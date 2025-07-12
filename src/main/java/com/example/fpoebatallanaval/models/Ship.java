@@ -96,6 +96,7 @@ public class Ship implements Serializable {
 
         // Dibuja el cuerpo del barco (rectángulo)
         gc.fillRect(drawPosition.x + cellSize, boatTopY, cellSize * (segments - 1.2), boatWidth);
+
     }
 
     /**
@@ -152,6 +153,8 @@ public class Ship implements Serializable {
     public void setDrawPosition(Position gridPos, Position drawPos) {
         this.gridPosition = gridPos;
         this.drawPosition = drawPos;
+
+
     }
 
     /**

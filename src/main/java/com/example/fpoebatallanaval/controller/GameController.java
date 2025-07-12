@@ -223,6 +223,7 @@ public class GameController implements Initializable {
                 + targetPos.x + "," + targetPos.y + " | Sideways: " + placingShip.isSideWays());
 
         placingShip.setShipPlacementColour(Ship.ShipPlacementColour.Placed);
+
         // Actualizar la posición de dibujo del barco ya colocado
         placingShip.setDrawPosition(
                 new Position(targetPos),
@@ -361,6 +362,7 @@ public class GameController implements Initializable {
      * Redibuja completamente el estado actual del juego en el canvas.
      */
     private void draw() {
+
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
@@ -370,6 +372,8 @@ public class GameController implements Initializable {
 
         if (gamePhase == GamePhase.PlacingShips) {
             placingShip.paint(gc);
+
+
         }
 
         // statusPanel.paint(gc);
@@ -393,6 +397,7 @@ public class GameController implements Initializable {
         game.setComputerShots(computerGrid.getMarkers());
         game.setPlayerName(playerName);
         game.setGamePhase(gamePhase);
+
 
         // Guardar estado del juego como objeto serializado
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("saved_game.dat"))) {
