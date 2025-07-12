@@ -1,6 +1,7 @@
 package com.example.fpoebatallanaval.controller;
 
 import com.example.fpoebatallanaval.models.*;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +18,10 @@ import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador principal del juego.
+ * Gestiona la lógica de juego, la interacción con el usuario y la actualización visual.
+ */
 public class GameController implements Initializable {
 
     // ========== FXML ==========
@@ -29,42 +34,56 @@ public class GameController implements Initializable {
     public enum GamePhase {PlacingShips, FiringShots, GameOver}
 
     private GamePhase gamePhase;
-    private Grid playerGrid;
-    private Grid computerGrid;
-    private Ship placingShip;
-    private Position tempPlacingPosition;
-    private int placingShipIndex;
-    private AI ai;
-    private Canvas canvas;
-    private String playerName;
-    public static boolean masterMode;
+    private Grid playerGrid;              // Tablero del jugador
+    private Grid computerGrid;            // Tablero de la computadora
+    private Ship placingShip;             // Barco que se está colocando actualmente
+    private Position tempPlacingPosition; // Posición temporal para pintar el barco en movimiento
+    private int placingShipIndex;         // Índice del barco que se está colocando
+    private AI ai;                        // Componente de la IA enemiga
+    private Canvas canvas;                // Área gráfica del juego
+    private String playerName;            // Nombre del jugador
+    public static boolean masterMode;     // Modo maestro (debug)
 
     // ========== Constructor ==========
     public GameController() throws IOException {
+        // Crear tableros para el jugador y la máquina
         computerGrid = new Grid(Grid.CELL_SIZE * Grid.GRID_WIDTH + 40, 0);
         playerGrid = new Grid(0,0);
         gamePhase = GamePhase.PlacingShips;
 
-        canvas = new Canvas(Grid.CELL_SIZE * Grid.GRID_WIDTH * 2 + 50, Grid.CELL_SIZE * Grid.GRID_HEIGHT);
+        // Crear lienzo (canvas) para pintar el juego
+        canvas = new Canvas(
+                Grid.CELL_SIZE * Grid.GRID_WIDTH * 2 + 50,
+                Grid.CELL_SIZE * Grid.GRID_HEIGHT
+        );
 
+        // Reiniciar juego e iniciar dibujo
         restart();
         draw();
     }
 
+    /**
+     * Método llamado automáticamente al cargar la vista.
+     * Inicializa la interfaz, muestra los datos del jugador y configura los eventos.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         mostrarDatosJugador();
         GameCanvasContainer.getChildren().add(canvas);
 
-        // === REGISTRAR EVENTOS DE MOUSE ===
+        // Registrar manejadores para eventos de mouse
         canvas.setOnMouseReleased(new MouseReleasedHandler());
         canvas.setOnMouseMoved(new MouseMovedHandler());
 
-        // Capturar teclas del teclado
+        // Habilitar captuas de teclas
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(event -> handleInput(event.getCode()));
     }
 
+    /**
+     * Muestra en pantalla el nickname del jugador, los barcos hundidos totales
+     * y los hundidos durante la partida actual
+     */
     @FXML
     public void mostrarDatosJugador() {
         String nickname = GameDataManager.getCurrentNickname();
@@ -76,13 +95,21 @@ public class GameController implements Initializable {
 
     }
 
-    // ========== Eventos de mouse ==========
+    // ======================================
+    // ========== EVENTOS DE MOUSE ==========
+    // ======================================
+
+    /**
+     * Manejador para eventos de clic del mouse.
+     * Dependiendo de la fase del juego, intenta colocar un barco o disparar.
+     */
     private class MouseReleasedHandler implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent event) {
             System.out.println("Mouse released at: (" + event.getX() + ", " + event.getY() + ")");
 
             Position mousePosition = new Position((int) event.getX(), (int) event.getY());
+
             if (gamePhase == GamePhase.PlacingShips && playerGrid.isPositionInside(mousePosition)) {
                 tryPlaceShip(mousePosition);
             } else if (gamePhase == GamePhase.FiringShots && computerGrid.isPositionInside(mousePosition)) {
@@ -92,16 +119,32 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Manejador de eventos de movimiento del mouse.
+     * Se utiliza para actualizar visualmente la posición del barco en colocación.
+     */
     private class MouseMovedHandler implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent event) {
             if (gamePhase != GamePhase.PlacingShips) return;
+
             tryMovePlacingShip(new Position((int) event.getX(), (int) event.getY()));
             draw();
         }
     }
 
     // ========== Entrada por teclado ==========
+
+    /**
+     * Maneja las entradas del teclado durante el juego.
+     * Teclas disponibles:
+     * - ESCAPE: sale del juego.
+     * - R: reinicia la partida.
+     * - X: rota el barco en colocación.
+     * - D: activa el modo maestro (debug).
+     * - S: muestra u oculta los barcos enemigos (modo trampa).
+     * @param keyCode Tecla presionada
+     */
     public void handleInput(KeyCode keyCode) {
         if (keyCode == KeyCode.ESCAPE) {
             System.exit(1);
@@ -109,9 +152,9 @@ public class GameController implements Initializable {
             restart();
         } else if (gamePhase == GamePhase.PlacingShips && keyCode == KeyCode.X) {
             placingShip.toggleSideways();
+
             // Reajustar posición para que no se salga del grid tras rotar
             Position adjustedPos = new Position(tempPlacingPosition);
-
             if (placingShip.isSideWays()) {
                 adjustedPos.x = Math.min(adjustedPos.x, Grid.GRID_WIDTH - placingShip.getSegments());
             } else {
@@ -128,6 +171,10 @@ public class GameController implements Initializable {
     }
 
     // ========== Ciclo del juego ==========
+
+    /**
+     * Reinicia la partida, incluyendo tableros, barcos y estado del juego.
+     */
     public void restart() {
         computerGrid.reset();
         playerGrid.reset();
@@ -139,7 +186,12 @@ public class GameController implements Initializable {
 
         placingShipIndex = 0;
         tempPlacingPosition = new Position(0, 0);
-        placingShip = new Ship(new Position(0, 0), new Position(playerGrid.getPosition().x, playerGrid.getPosition().y), Grid.BOAT_SIZES[0], true);
+        placingShip = new Ship(
+                new Position(0, 0),
+                new Position(playerGrid.getPosition().x, playerGrid.getPosition().y),
+                Grid.BOAT_SIZES[0],
+                true
+        );
         updateShipPlacement(tempPlacingPosition);
 
         computerGrid.populateShips();
@@ -149,19 +201,28 @@ public class GameController implements Initializable {
         draw();
     }
 
+    /**
+     * Intenta colocar el barco en la posición dada.
+     * Si es válida, se llama a {@link #placeShip(Position)}.
+     */
     private void tryPlaceShip(Position mousePosition) {
         Position targetPos = playerGrid.getPositionInGrid(mousePosition.x, mousePosition.y);
         updateShipPlacement(targetPos);
+
         if (playerGrid.canPlaceShipAt(targetPos.x, targetPos.y, Grid.BOAT_SIZES[placingShipIndex], placingShip.isSideWays())) {
             placeShip(targetPos);
         }
     }
 
+    /**
+     * Coloca un barco en el tablero del jugador.
+     * Si todos los barcos han sido colocados, se pasa a la fase de disparos.
+     */
     private void placeShip(Position targetPos) {
         System.out.println("Barco #" + placingShipIndex + " colocado en: "
                 + targetPos.x + "," + targetPos.y + " | Sideways: " + placingShip.isSideWays());
-        placingShip.setShipPlacementColour(Ship.ShipPlacementColour.Placed);
 
+        placingShip.setShipPlacementColour(Ship.ShipPlacementColour.Placed);
         // Actualizar la posición de dibujo del barco ya colocado
         placingShip.setDrawPosition(
                 new Position(targetPos),
@@ -193,6 +254,10 @@ public class GameController implements Initializable {
         saveGame("defaultPlayerName");
     }
 
+    /**
+     * Intenta disparar a una posición del tablero enemigo.
+     * Si es un disparo válido, se ejecuta el turno del jugador y luego el de la IA.
+     */
     private void tryFireAtComputer(Position mousePosition) {
         Position targetPos = computerGrid.getPositionInGrid(mousePosition.x, mousePosition.y);
         if (!computerGrid.isPositionMarked(targetPos)) {
@@ -204,9 +269,14 @@ public class GameController implements Initializable {
                 // Status panel
             }
         }
+
         draw();
     }
 
+    /**
+     * Ejecuta el turno del jugador. Marca la posición y verifica si hubo acierto o destrucción.
+     * @param targetPos
+     */
     private void doPlayerTurn(Position targetPos) {
         boolean hit = computerGrid.markPosition(targetPos);
         String hitMiss = hit ? "Hit" : "Missed";
@@ -222,6 +292,9 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Ejecuta el turno de la IA. Selecciona una posición y marca el tablero del jugador.
+     */
     private void doAiTurn() {
         Position aiMove = ai.selectMove();
         boolean hit = playerGrid.markPosition(aiMove);
@@ -239,6 +312,10 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Intenta mover visualmente el barco en colocación.
+     * Se asegura de que no se salga del tablero.
+     */
     private void tryMovePlacingShip(Position mousePosition) {
         if (playerGrid.isPositionInside(mousePosition)) {
             Position targetPos = playerGrid.getPositionInGrid(mousePosition.x, mousePosition.y);
@@ -255,6 +332,9 @@ public class GameController implements Initializable {
         draw();
     }
 
+    /**
+     * Actualiza la posición de dibujo del barco en colocación y define si es válida.
+     */
     private void updateShipPlacement(Position targetPos) {
         if (placingShip.isSideWays()) {
             targetPos.x = Math.min(targetPos.x, Grid.GRID_WIDTH - placingShip.getSegments());
@@ -277,6 +357,9 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Redibuja completamente el estado actual del juego en el canvas.
+     */
     private void draw() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -293,8 +376,16 @@ public class GameController implements Initializable {
     }
 
     // ========== Guardar / Cargar ==========
+
+    /**
+     * Guarda el estado actual del juego (barcos, disparos fase y nombre del jugador)
+     * en un archivo binario 'saved_game.dat' y el nombre del jugador en 'player_name.txt'.
+     * @param playerName Nombre del jugador actual.
+     */
     public void saveGame(String playerName) {
         this.playerName = playerName;
+
+        // Crear objeto Game con el estado actual
         Game game = new Game();
         game.setPlayerShips(playerGrid.getShips());
         game.setComputerShips(computerGrid.getShips());
@@ -303,12 +394,14 @@ public class GameController implements Initializable {
         game.setPlayerName(playerName);
         game.setGamePhase(gamePhase);
 
+        // Guardar estado del juego como objeto serializado
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("saved_game.dat"))) {
             oos.writeObject(game);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        // Guardar el nombre del jugador por separado
         try (PrintWriter writer = new PrintWriter(new FileWriter("player_name.txt"))) {
             writer.println(playerName);
         } catch (IOException e) {
@@ -316,6 +409,10 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Carga el estado del juego desde 'saved_game.dat' y restaura todos los elementos visuales y lógicos.
+     * También reasocia los marcadores a sus barcos correspondientes.
+     */
     public void loadGame() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("saved_game.dat"))) {
             Game game = (Game) ois.readObject();
@@ -343,6 +440,7 @@ public class GameController implements Initializable {
             // Restaurar el resto del estado del juego
             gamePhase = game.getGamePhase();
             this.playerName = game.getPlayerName();
+
             // statusPanel.setTopLine("Bienvenido de nuevo, " + playerName + "!");
             draw();  // Redibujar el tablero con el estado restaurado
 
@@ -351,11 +449,18 @@ public class GameController implements Initializable {
         }
     }
 
+    /**
+     * Devuelve el nombre actual del jugador.
+     * @return Nombre del jugador.
+     */
     public String getPlayerName() {
-        return playerName; // Método para obtener el nombre del jugador
+        return playerName;
     }
 
-    // Métodos vacíos (placeholder para interfaces si es necesario))
+    // ========== Placeholder para eventos del mouse (no utilizados actualmente) ==========
+
+    // Métodos vacíos requeridos para compatibilidad con interfaces o futuros usos.
+
     public void mouseClicked(MouseEvent e) {}
     public void mousePressed(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
