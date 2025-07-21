@@ -74,7 +74,7 @@ public class Grid extends Rectangle implements Serializable {
      * @param gc Contexto gráfico para pintar en el canvas.
      */
     public void paint(GraphicsContext gc) {
-        drawMarkers(gc);
+
         drawGrid(gc);
 
         for (Ship ship : ships) {
@@ -85,7 +85,7 @@ public class Grid extends Rectangle implements Serializable {
                 ship.paint(gc);
             }
         }
-
+        drawMarkers(gc);
     }
 
     public void setShowShips(boolean showShips) { this.showShips = showShips; }
