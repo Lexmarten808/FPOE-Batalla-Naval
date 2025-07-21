@@ -107,7 +107,7 @@ public class GameController implements Initializable {
         @Override
         public void handle(MouseEvent event) {
             System.out.println("Mouse released at: (" + event.getX() + ", " + event.getY() + ")");
-
+            System.out.println("game state: " + gamePhase);
             Position mousePosition = new Position((int) event.getX(), (int) event.getY());
 
             if (gamePhase == GamePhase.PlacingShips && playerGrid.isPositionInside(mousePosition)) {
@@ -263,6 +263,7 @@ public class GameController implements Initializable {
         Position targetPos = computerGrid.getPositionInGrid(mousePosition.x, mousePosition.y);
         if (!computerGrid.isPositionMarked(targetPos)) {
             doPlayerTurn(targetPos);
+
             if (!computerGrid.areAllShipsDestroyed()) doAiTurn();
 
             if (computerGrid.areAllShipsDestroyed()) {
@@ -282,6 +283,12 @@ public class GameController implements Initializable {
         boolean hit = computerGrid.markPosition(targetPos);
         String hitMiss = hit ? "Hit" : "Missed";
         String destroyed = "";
+
+        //debug
+        if (hit) {System.out.println("Barco atacado en: " + targetPos.x + ", " + targetPos.y);}
+        if(!hit){System.out.println("tiro fallido");}
+
+
         if (hit && computerGrid.getMarkerAtPosition(targetPos).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
         }
@@ -301,6 +308,11 @@ public class GameController implements Initializable {
         boolean hit = playerGrid.markPosition(aiMove);
         String hitMiss = hit ? "Hit" : "Missed";
         String destroyed = "";
+
+        //debug
+        if(hit){System.out.println("barco del jugador atacado en: " + aiMove.x + ", " + aiMove.y);}
+        if(!hit){System.out.println("tiro de la maquina fallido");}
+
         if (hit && playerGrid.getMarkerAtPosition(aiMove).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
         }

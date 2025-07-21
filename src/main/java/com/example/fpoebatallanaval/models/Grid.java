@@ -81,7 +81,7 @@ public class Grid extends Rectangle implements Serializable {
 
 
             if (showShips || ship.isDestroyed()) {
-                System.out.println("Dibujando barcos del grid en: " + position.x + "," + position.y);
+
                 ship.paint(gc);
             }
         }
