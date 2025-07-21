@@ -159,7 +159,7 @@ public class Grid extends Rectangle implements Serializable {
         }
 
         int gridX = Math.max(0, Math.min((mouseX - position.x) / CELL_SIZE, GRID_WIDTH - 1));
-        int gridY = Math.max(0, Math.min((mouseY - position.x) / CELL_SIZE, GRID_HEIGHT - 1));
+        int gridY = Math.max(0, Math.min((mouseY - position.y) / CELL_SIZE, GRID_HEIGHT - 1));
 
         return new Position(gridX, gridY);
     }

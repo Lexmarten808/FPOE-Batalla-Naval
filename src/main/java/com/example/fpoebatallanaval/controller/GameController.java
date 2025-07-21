@@ -280,6 +280,7 @@ public class GameController implements Initializable {
      * @param targetPos
      */
     private void doPlayerTurn(Position targetPos) {
+
         boolean hit = computerGrid.markPosition(targetPos);
         String hitMiss = hit ? "Hit" : "Missed";
         String destroyed = "";
