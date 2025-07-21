@@ -286,7 +286,7 @@ public class GameController implements Initializable {
 
         //debug
         if (hit) {System.out.println("Barco atacado en: " + targetPos.x + ", " + targetPos.y);}
-        if(!hit){System.out.println("tiro fallido");}
+        if(!hit){System.out.println("tiro realizado fallido en: " + targetPos.x + ", " + targetPos.y);}
 
 
         if (hit && computerGrid.getMarkerAtPosition(targetPos).getAssociatedShip().isDestroyed()) {
