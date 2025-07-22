@@ -1,78 +1,67 @@
 package com.example.fpoebatallanaval.controller;
 
-import com.example.fpoebatallanaval.model.AlertHelper;
-import com.example.fpoebatallanaval.model.GameDataManager;
-import com.example.fpoebatallanaval.view.GameBattleView;
-import com.example.fpoebatallanaval.view.MenuView;
-import com.example.fpoebatallanaval.view.NickNameView;
+import com.example.fpoebatallanaval.models.GameDataManager;
+import com.example.fpoebatallanaval.views.GameView;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
 
+import java.io.IOException;
+
+/**
+ * Controlador de la vista de ingreso de apodo (nickname).
+ * Se encarga de procesar la entrada del usuario y configuar los datos iniciales del jugador.
+ */
 public class NicknameController {
+
+    // Campo de texto donde el jugador escribe su nickname
     @FXML
-    private AnchorPane continuePane;
+    private TextField textFieldNickname;
+
+    /**
+     * Método invocado cuando se presiona el botón "Continuar".
+     * Valida el apodo ingresado, lo guarda, y lanza la vista principal del juego.
+     * @param event Evento de acción asociado al botón
+     * @throws IOException si ocurre un error al cargar la vista del juego
+     */
     @FXML
-    private TextField nicknameInput;
+    void onActionButtonContinuar(ActionEvent event) throws IOException {
+        // Obtener el texto ingresado por el jugador
+        String nickname = textFieldNickname.getText();
 
+        // Si el campo está vacío, se una un nombre por defecto
+        if (nickname.isBlank()) {
+            nickname = "Jugador"; // Default nickname
+        }
 
-    @FXML
-    void OnActionContinuarButton(ActionEvent event) {
-
-        //obtiene el string del nombre
-        String nickname = nicknameInput.getText().toLowerCase().trim();
-        if (nickname.isEmpty()) {
-            AlertHelper.showErrorAlert("nombre no valido!","","por favor ingresa un nombre valido");
-            return;}
-
-        //guarda el nombre en nickname.txt
+        /*
+        // Guarda el apodo en memoria (uso interno)
         GameDataManager.saveNickname(nickname);
 
-        //declara el booleano para saber si el jugador existe o es nuevo
+        // Verificar si el jugador ya existe en los registros
         boolean yaRegistrado = GameDataManager.playerExists(nickname);
 
-        //declara por defecto el numero de barcos hundidos si el jugador es nuevo
-        if(!yaRegistrado){GameDataManager.updateBarcosHundidos(nickname, 0);
+        // Si es nuevo, inicializa sus estadísticas con 0 barcos hundidos
+        if (!yaRegistrado) {
+            GameDataManager.updateBarcosHundidos(nickname, 0);
+        }
 
-            //close current stage
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.close();
-            //carga la vista del juego nuevo
-            Stage stage = new Stage();
-            GameBattleView.getInstance().show(stage);}
-
-        //guarda el nickname y el numero de barcos hundidos en players.txt
+        // Guarda el apodo y estadísticas en el archivo players.txt
         GameDataManager.savePlayerStats();
+         */
 
-        /*muestra el dialogo para preguntar si se desea continuar la ultima partida
-          en caso de que el nombre tenga una partida guardada
-        */
-        if (yaRegistrado) {continuePane.setVisible(true);}
+        // Cargar y mostrar la ventana del juego (patrón Singleton)
+        GameView gameView = GameView.getInstance();
+        gameView.show();
 
+        // Pass game state to the controller
 
-
-
-    }
-    @FXML
-    void OnActionContinueGame(ActionEvent event) {
-
-    }
-
-    @FXML
-    void OnActionNewGame(ActionEvent event) {
-        //close current stage
+        // Cerrar la ventana actual (vista del nickname)
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.close();
-
-        Stage stage = new Stage();
-        GameBattleView.getInstance().show(stage);
-
-
     }
+
 }

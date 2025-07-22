@@ -1,20 +1,29 @@
 package com.example.fpoebatallanaval.controller;
 
-import com.example.fpoebatallanaval.model.AlertHelper;
-import com.example.fpoebatallanaval.view.NickNameView;
+import com.example.fpoebatallanaval.models.AlertHelper;
+import com.example.fpoebatallanaval.views.NicknameView;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
+/**
+ * Controlador para la vista del menú principal del juego.
+ * Maneja los eventos de los botones: Nueva Partida, Instrucciones, Cargar Partida, Modo Maestro y Salir.
+ */
 public class MenuController {
-    @FXML
-    private Label welcomeText;
 
-
+    /**
+     * Muestra una alerta con las instrucciones del juego al usuario.
+     * Este método se activa al hacer click en el botón "Instrucciones".
+     * @param event Evento generado por le botón
+     */
     @FXML
-    void OnActionInstruccionesButton(ActionEvent event) {
+    void onActionButtonInstrucciones(ActionEvent event) {
         System.out.println("Mostrando instrucciones...");
         AlertHelper.showInfoAlert("","","\n" +
                 "Objetivo del juego:\n" +
@@ -44,30 +53,62 @@ public class MenuController {
                 "Gana quien hunda todos los barcos del oponente.");
     }
 
+    /**
+     * Abre la vista de ingreso de nickname para comenzar una nueva partida.
+     * Este método se activa al hacer click en el botón "Nueva Partida".
+     * @param event Evento generado por el botón
+     * @throws IOException si ocurre un error al cargar la vista
+     */
     @FXML
-    void OnActionJugarButton(ActionEvent event) {
+    void onActionButtonNuevaPartida(ActionEvent event) throws IOException {
         System.out.println("Iniciando juego...");
-        //close current stage
+
+        // Load the nickname view (singleton)
+        NicknameView nicknameView = NicknameView.getInstance();
+        nicknameView.show();
+
+        // Close the current menun window
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.close();
+    }
+
+    /**
+     * (En desarrollo) Manejador para cargar una partida existente.
+     * Actualmebte cierra la ventana pero no implementa la carga.
+     * @param event Evento generado por el botón
+     */
+    @FXML
+    void onActionButtonCargarPartida(ActionEvent event) {
+        System.out.println("Iniciando juego...");
+        //close current stage
+        // Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        // currentStage.close();
         //loads the nickname stage
-        Stage stage = new Stage();
-        NickNameView.getInstance().show(stage);
+        // Stage stage = new Stage();
+        // NicknameView.getInstance().show(stage);
 
     }
+
+    /**
+     * (En desarrollo) Manejador para activar un modo especial (debug o desarrollador).
+     * Actualmente solo imprime un mensaje en consola.
+     * @param event Evento generado por el botón
+     */
     @FXML
-    void OnActionDebugButton(ActionEvent event) {
+    void onActionButtonModoMaestro(ActionEvent event) {
         System.out.println("iniciando modo debug ...");
-
-
     }
 
+    /**
+     * Cierra la aplicación al hacer clic en el botón "Salir".
+     * @param event Evento generado por el botón
+     */
     @FXML
-    void OnActionSalirButton(ActionEvent event) {
+    void onActionButtonSalir(ActionEvent event) {
         System.out.println("Saliendo del juego...");
         //close current stage
         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         currentStage.close();
-
     }
+
 }
