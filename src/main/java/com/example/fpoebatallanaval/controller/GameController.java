@@ -43,6 +43,9 @@ public class GameController implements Initializable {
     private Canvas canvas;                // Área gráfica del juego
     private String playerName;            // Nombre del jugador
     public static boolean masterMode;     // Modo maestro (debug)
+    private int barcosHundidos = 0;       //contador de barcos hundidos en la partida
+    private int totalBarcosHundidos = 0;  //contador del total de barcos undidos
+
 
     // ========== Constructor ==========
     public GameController() throws IOException {
@@ -268,6 +271,8 @@ public class GameController implements Initializable {
 
             if (computerGrid.areAllShipsDestroyed()) {
                 gamePhase = GamePhase.GameOver;
+                String ganador= GameDataManager.getCurrentNickname();
+                AlertHelper.showInfoAlert("the game has ended","ENDGAME!","the game has ended the winner is: "+ganador);
                 // Status panel
             }
         }
@@ -292,11 +297,19 @@ public class GameController implements Initializable {
 
         if (hit && computerGrid.getMarkerAtPosition(targetPos).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
+            barcosHundidos+=1;
+            actualizarLabelBarcosHundidos();
+
+            //añadir los barcos destruidos por el jugador a su historial
+            GameDataManager.updateBarcosHundidos(GameDataManager.getCurrentNickname(),1);
+            actualizarLabelTotalBarcosHundidos();
         }
         draw();
         saveGame(playerName); // Guardado automático del estado
         if (computerGrid.areAllShipsDestroyed()) {
             gamePhase = GamePhase.GameOver;
+
+
             // Status panel
         }
     }
@@ -316,12 +329,18 @@ public class GameController implements Initializable {
 
         if (hit && playerGrid.getMarkerAtPosition(aiMove).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
+            //añadir los barcos destruidos por el jugador a su historial
+            GameDataManager.updateBarcosHundidos(GameDataManager.getCurrentNickname(),1);
+            actualizarLabelTotalBarcosHundidos();
+
         }
         // status panel
         draw();
         saveGame(playerName); // Guardado automático del estado
         if (playerGrid.areAllShipsDestroyed()) {
             gamePhase = GamePhase.GameOver;
+
+
             // Status panel
         }
     }
@@ -474,6 +493,17 @@ public class GameController implements Initializable {
     public String getPlayerName() {
         return playerName;
     }
+
+    //metodo para actualizar los barcos hundidos en la partida
+    private void actualizarLabelBarcosHundidos() {
+        BarcoshundidosId.setText("Hundidos esta partida: " + barcosHundidos);
+    }
+
+    //metodo para actualizar el total de barcos hundidos por el jugador
+    private void actualizarLabelTotalBarcosHundidos() {
+        totalBarcosHundidosId.setText("Total Barcos Hundidos: " + GameDataManager.getBarcosHundidos(GameDataManager.getCurrentNickname()));
+    }
+
 
     // ========== Placeholder para eventos del mouse (no utilizados actualmente) ==========
 

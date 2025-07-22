@@ -35,14 +35,14 @@ public class GameDataManager {
     public static String loadNickname() {
         File file = new File(NICKNAME_FILE);
         if (!file.exists()) {
-            currentNickname = "Jugador";
+            currentNickname = "Guest";
             return currentNickname;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             currentNickname = reader.readLine();
         } catch (IOException e) {
-            currentNickname = "Jugador";
+            currentNickname = "Guest";
         }
 
         return currentNickname;

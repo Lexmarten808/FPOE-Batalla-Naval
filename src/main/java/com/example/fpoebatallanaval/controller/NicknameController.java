@@ -34,12 +34,13 @@ public class NicknameController {
 
         // Si el campo está vacío, se una un nombre por defecto
         if (nickname.isBlank()) {
-            nickname = "Jugador"; // Default nickname
+            nickname = "Guest"; // Default nickname
         }
 
-        /*
+
         // Guarda el apodo en memoria (uso interno)
         GameDataManager.saveNickname(nickname);
+
 
         // Verificar si el jugador ya existe en los registros
         boolean yaRegistrado = GameDataManager.playerExists(nickname);
@@ -51,7 +52,7 @@ public class NicknameController {
 
         // Guarda el apodo y estadísticas en el archivo players.txt
         GameDataManager.savePlayerStats();
-         */
+
 
         // Cargar y mostrar la ventana del juego (patrón Singleton)
         GameView gameView = GameView.getInstance();
