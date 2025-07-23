@@ -16,7 +16,6 @@ import java.io.Serializable;
  */
 public class Grid extends Rectangle implements Serializable {
 
-    // Identificador de versión para asegurar compatibilidad durante la serialización
     private static final long serialVersionUID = 1L;
 
     // Constantes de configuración del tablero
@@ -25,20 +24,13 @@ public class Grid extends Rectangle implements Serializable {
     public static final int GRID_HEIGHT = 10; // Número de filas
     public static final int[] BOAT_SIZES = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1}; // Tamaños de los barcos a generar
 
-    // Matriz de celdas (marcadores) que representan el estado del tablero
-    private Marker[][] markers = new Marker[GRID_WIDTH][GRID_HEIGHT];
+    private Marker[][] markers = new Marker[GRID_WIDTH][GRID_HEIGHT]; // Matriz de celdas (marcadores) que representan el estado del tablero
+    private List<Ship> ships; // Lista de barcos presentes en el tablero
+    private Random random; // Generador de aleatoriedad para colocar barcos
+    private boolean showShips; // Controla si se deben mostrar visualmente los barcos
+    private boolean allShipsDestroyed; // Indica si todos los barcos han sido destruidos
 
-    // Lista de barcos presentes en el tablero
-    private List<Ship> ships;
-
-    // Generador de aleatoriedad para colocar barcos
-    private Random random;
-
-    // Controla si se deben mostrar visualmente los barcos
-    private boolean showShips;
-
-    // Indica si todos los barcos han sido destruidos
-    private boolean allShipsDestroyed;
+    Game game = Game.getInstance();
 
     /**
      * Constructor que inicializa la cuadrícula y crea los marcadores.
@@ -74,14 +66,9 @@ public class Grid extends Rectangle implements Serializable {
      * @param gc Contexto gráfico para pintar en el canvas.
      */
     public void paint(GraphicsContext gc) {
-
         drawGrid(gc);
-
         for (Ship ship : ships) {
-
-
             if (showShips || ship.isDestroyed()) {
-
                 ship.paint(gc);
             }
         }
@@ -263,6 +250,9 @@ public class Grid extends Rectangle implements Serializable {
                 gridY = random.nextInt(sideways ? GRID_HEIGHT : GRID_HEIGHT - BOAT_SIZES[i]);
             } while (!canPlaceShipAt(gridX, gridY, BOAT_SIZES[i], sideways));
             placeShip(gridX, gridY, BOAT_SIZES[i], sideways);
+        }
+        if (game.isMasterMode()) {
+            setShowShips(true);
         }
     }
 

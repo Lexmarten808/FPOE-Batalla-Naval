@@ -8,14 +8,10 @@ import java.io.Serializable;
  */
 public class Position implements Serializable {
 
-    // Identificador de versión para asegurar compatibilidad durante la serialización
     private static final long serialVersionUID = 1L;
 
-    // Coordenada horizontal
-    public int x;
-
-    // Coordenada vertical
-    public int y;
+    public int x; // Coordenada horizontal
+    public int y; // Coordenada vertical
 
     /**
      * Constructor principal que inicializa una posición con coordenadas específicas.
@@ -34,16 +30,6 @@ public class Position implements Serializable {
     public Position(Position posToCopy) {
         this.x = posToCopy.x;
         this.y = posToCopy.y;
-    }
-
-    /**
-     * Establece nuevas coordenadas para esta posición.
-     * @param x Nueva coordenada horizontal
-     * @param y Nueva coordenada vertical
-     */
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
     }
 
     /**

@@ -11,8 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.net.URL;
@@ -31,28 +29,26 @@ public class GameController implements Initializable {
     @FXML private AnchorPane GameCanvasContainer;
 
     // ========== Lógica de juego ==========
-    public enum GamePhase {PlacingShips, FiringShots, GameOver}
 
-    private GamePhase gamePhase;
-    private Grid playerGrid;              // Tablero del jugador
-    private Grid computerGrid;            // Tablero de la computadora
+    private Grid playerGrid;
+    private Grid computerGrid;
     private Ship placingShip;             // Barco que se está colocando actualmente
     private Position tempPlacingPosition; // Posición temporal para pintar el barco en movimiento
     private int placingShipIndex;         // Índice del barco que se está colocando
     private AI ai;                        // Componente de la IA enemiga
     private Canvas canvas;                // Área gráfica del juego
-    private String playerName;            // Nombre del jugador
-    public static boolean masterMode;     // Modo maestro (debug)
-    private int barcosHundidos = 0;       //contador de barcos hundidos en la partida
-    private int totalBarcosHundidos = 0;  //contador del total de barcos undidos
+    private int barcosHundidos = 0;       // contador de barcos hundidos en la partida
+    private int totalBarcosHundidos = 0;  // contador del total de barcos undidos
+
+    Game game = Game.getInstance();
 
 
     // ========== Constructor ==========
     public GameController() throws IOException {
         // Crear tableros para el jugador y la máquina
-        computerGrid = new Grid(Grid.CELL_SIZE * Grid.GRID_WIDTH + 40, 0);
-        playerGrid = new Grid(0,0);
-        gamePhase = GamePhase.PlacingShips;
+        playerGrid = new Grid(0, 0);
+        computerGrid = (new Grid(Grid.CELL_SIZE * Grid.GRID_WIDTH + 40, 0));
+        game.setPhase("PlacingShips");
 
         // Crear lienzo (canvas) para pintar el juego
         canvas = new Canvas(
@@ -62,6 +58,9 @@ public class GameController implements Initializable {
 
         // Reiniciar juego e iniciar dibujo
         restart();
+        if (game.isMasterMode() == true) {
+            computerGrid.setShowShips(true);
+        }
         draw();
     }
 
@@ -89,12 +88,12 @@ public class GameController implements Initializable {
      */
     @FXML
     public void mostrarDatosJugador() {
-        String nickname = GameDataManager.getCurrentNickname();
-        int totalHundidos = GameDataManager.getBarcosHundidos(nickname);
+        String nickname = game.getPlayerName();
+        // int totalHundidos = GameDataManager.getBarcosHundidos(nickname);
 
         NicknameId.setText(nickname);
-        totalBarcosHundidosId.setText("Total hundidos: " + totalHundidos);
-        BarcoshundidosId.setText("Hundidos en esta partida: 0");
+        totalBarcosHundidosId.setText("Total hundidos: -");
+        BarcoshundidosId.setText("Hundidos en esta partida: -");
 
     }
 
@@ -109,13 +108,13 @@ public class GameController implements Initializable {
     private class MouseReleasedHandler implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent event) {
-            System.out.println("Mouse released at: (" + event.getX() + ", " + event.getY() + ")");
-            System.out.println("game state: " + gamePhase);
+            // System.out.println("Mouse released at: (" + event.getX() + ", " + event.getY() + ")");
+            // System.out.println("game state: " + game.getPhase());
             Position mousePosition = new Position((int) event.getX(), (int) event.getY());
 
-            if (gamePhase == GamePhase.PlacingShips && playerGrid.isPositionInside(mousePosition)) {
+            if (game.getPhase() == "PlacingShips" && playerGrid.isPositionInside(mousePosition)) {
                 tryPlaceShip(mousePosition);
-            } else if (gamePhase == GamePhase.FiringShots && computerGrid.isPositionInside(mousePosition)) {
+            } else if (game.getPhase() == "FiringShots" && computerGrid.isPositionInside(mousePosition)) {
                 tryFireAtComputer(mousePosition);
             }
             draw();
@@ -129,7 +128,7 @@ public class GameController implements Initializable {
     private class MouseMovedHandler implements EventHandler<MouseEvent> {
         @Override
         public void handle(MouseEvent event) {
-            if (gamePhase != GamePhase.PlacingShips) return;
+            if (game.getPhase() != "PlacingShips") return;
 
             tryMovePlacingShip(new Position((int) event.getX(), (int) event.getY()));
             draw();
@@ -144,7 +143,6 @@ public class GameController implements Initializable {
      * - ESCAPE: sale del juego.
      * - R: reinicia la partida.
      * - X: rota el barco en colocación.
-     * - D: activa el modo maestro (debug).
      * - S: muestra u oculta los barcos enemigos (modo trampa).
      * @param keyCode Tecla presionada
      */
@@ -153,7 +151,7 @@ public class GameController implements Initializable {
             System.exit(1);
         } else if (keyCode == KeyCode.R) {
             restart();
-        } else if (gamePhase == GamePhase.PlacingShips && keyCode == KeyCode.X) {
+        } else if (game.getPhase() == "PlacingShips" && keyCode == KeyCode.X) {
             placingShip.toggleSideways();
 
             // Reajustar posición para que no se salga del grid tras rotar
@@ -165,9 +163,7 @@ public class GameController implements Initializable {
             }
 
             updateShipPlacement(adjustedPos);
-        } else if (keyCode == KeyCode.D) {
-            masterMode = true;
-        } else if (keyCode == KeyCode.S && gamePhase == GamePhase.PlacingShips) {
+        } else if (keyCode == KeyCode.S && game.getPhase() == "PlacingShips") {
             computerGrid.setShowShips(!computerGrid.isShowingShips());
         }
         draw();
@@ -198,8 +194,8 @@ public class GameController implements Initializable {
         updateShipPlacement(tempPlacingPosition);
 
         computerGrid.populateShips();
-        masterMode = false;
-        gamePhase = GamePhase.PlacingShips;
+        game.setMasterMode(false);
+        game.setPhase("PlacingShips");
 
         draw();
     }
@@ -251,11 +247,10 @@ public class GameController implements Initializable {
             );
             updateShipPlacement(targetPos);
         } else {
-            gamePhase = GamePhase.FiringShots;
-            // Status panel
+            game.setPhase("FiringShots");
         }
         draw();
-        saveGame("defaultPlayerName");
+        saveGame();
     }
 
     /**
@@ -270,10 +265,10 @@ public class GameController implements Initializable {
             if (!computerGrid.areAllShipsDestroyed()) doAiTurn();
 
             if (computerGrid.areAllShipsDestroyed()) {
-                gamePhase = GamePhase.GameOver;
-                String ganador= GameDataManager.getCurrentNickname();
-                AlertHelper.showInfoAlert("the game has ended","ENDGAME!","the game has ended the winner is: "+ganador);
-                // Status panel
+                game.setPhase("GameOver");
+                String winner = game.getPlayerName();
+                AlertHelper.showInfoAlert("The game has ended","ENDGAME!","The winner is: " + winner);
+                System.exit(1);
             }
         }
 
@@ -291,26 +286,23 @@ public class GameController implements Initializable {
         String destroyed = "";
 
         //debug
-        if (hit) {System.out.println("Barco atacado en: " + targetPos.x + ", " + targetPos.y);}
-        if(!hit){System.out.println("tiro realizado fallido en: " + targetPos.x + ", " + targetPos.y);}
+        // if (hit) {System.out.println("Barco atacado en: " + targetPos.x + ", " + targetPos.y);}
+        // if(!hit){System.out.println("tiro realizado fallido en: " + targetPos.x + ", " + targetPos.y);}
 
 
         if (hit && computerGrid.getMarkerAtPosition(targetPos).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
             barcosHundidos+=1;
-            actualizarLabelBarcosHundidos();
+            // actualizarLabelBarcosHundidos();
 
             //añadir los barcos destruidos por el jugador a su historial
-            GameDataManager.updateBarcosHundidos(GameDataManager.getCurrentNickname(),1);
-            actualizarLabelTotalBarcosHundidos();
+            // GameDataManager.updateBarcosHundidos(GameDataManager.getCurrentNickname(),1);
+            // actualizarLabelTotalBarcosHundidos();
         }
         draw();
-        saveGame(playerName); // Guardado automático del estado
+        saveGame();
         if (computerGrid.areAllShipsDestroyed()) {
-            gamePhase = GamePhase.GameOver;
-
-
-            // Status panel
+            game.setPhase("GameOver");
         }
     }
 
@@ -324,24 +316,20 @@ public class GameController implements Initializable {
         String destroyed = "";
 
         //debug
-        if(hit){System.out.println("barco del jugador atacado en: " + aiMove.x + ", " + aiMove.y);}
-        if(!hit){System.out.println("tiro de la maquina fallido");}
+        // if(hit){System.out.println("barco del jugador atacado en: " + aiMove.x + ", " + aiMove.y);}
+        // if(!hit){System.out.println("tiro de la maquina fallido");}
 
         if (hit && playerGrid.getMarkerAtPosition(aiMove).getAssociatedShip().isDestroyed()) {
             destroyed = "(Destroyed)";
             //añadir los barcos destruidos por el jugador a su historial
-            GameDataManager.updateBarcosHundidos(GameDataManager.getCurrentNickname(),1);
-            actualizarLabelTotalBarcosHundidos();
+            //GameDataManager.updateBarcosHundidos(GameDataManager.getCurrentNickname(),1);
+            //actualizarLabelTotalBarcosHundidos();
 
         }
-        // status panel
         draw();
-        saveGame(playerName); // Guardado automático del estado
+        saveGame();
         if (playerGrid.areAllShipsDestroyed()) {
-            gamePhase = GamePhase.GameOver;
-
-
-            // Status panel
+            game.setPhase("GameOver");
         }
     }
 
@@ -402,13 +390,9 @@ public class GameController implements Initializable {
         computerGrid.paint(gc);
         playerGrid.paint(gc);
 
-        if (gamePhase == GamePhase.PlacingShips) {
+        if (game.getPhase() == "PlacingShips") {
             placingShip.paint(gc);
-
-
         }
-
-        // statusPanel.paint(gc);
     }
 
     // ========== Guardar / Cargar ==========
@@ -416,23 +400,21 @@ public class GameController implements Initializable {
     /**
      * Guarda el estado actual del juego (barcos, disparos fase y nombre del jugador)
      * en un archivo binario 'saved_game.dat' y el nombre del jugador en 'player_name.txt'.
-     * @param playerName Nombre del jugador actual.
      */
-    public void saveGame(String playerName) {
-        this.playerName = playerName;
-
-        // Crear objeto Game con el estado actual
-        Game game = new Game();
+    public void saveGame() {
+        if (!game.isMasterMode()) { return; }
+        // System.out.println("Inicio de guardado...");
         game.setPlayerShips(playerGrid.getShips());
         game.setComputerShips(computerGrid.getShips());
-        game.setPlayerShots(playerGrid.getMarkers());
-        game.setComputerShots(computerGrid.getMarkers());
-        game.setPlayerName(playerName);
-        game.setGamePhase(gamePhase);
 
+        if (game == null || playerGrid == null || computerGrid == null) {
+            System.out.println("No se puede guardar el juego: componentes nulos.");
+            return;
+        }
 
         // Guardar estado del juego como objeto serializado
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("saved_game.dat"))) {
+            System.out.println(game);
             oos.writeObject(game);
         } catch (IOException e) {
             e.printStackTrace();
@@ -440,59 +422,71 @@ public class GameController implements Initializable {
 
         // Guardar el nombre del jugador por separado
         try (PrintWriter writer = new PrintWriter(new FileWriter("player_name.txt"))) {
-            writer.println(playerName);
+            writer.println(game.getPlayerName());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // System.out.println("Guardado exitosamente.");
     }
+
 
     /**
      * Carga el estado del juego desde 'saved_game.dat' y restaura todos los elementos visuales y lógicos.
      * También reasocia los marcadores a sus barcos correspondientes.
      */
     public void loadGame() {
+        System.out.println("Función loadGame ejecutada...");
+
+        // Cargar el estado del juego desde el archivo serializado
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("saved_game.dat"))) {
-            Game game = (Game) ois.readObject();
+            System.out.println("1");
+            Game loadedGame = (Game) ois.readObject();
+            System.out.println("2");
+            this.game = loadedGame; // Reasignar la instancia del juego
+            System.out.println("3");
+            System.out.println(loadedGame);
 
-            // Cargar barcos y marcadores desde el estado guardado
-            playerGrid.setShips(game.getPlayerShips());
-            computerGrid.setShips(game.getComputerShips());
-            playerGrid.setMarkers(game.getPlayerShots(), canvas.getGraphicsContext2D());
-            computerGrid.setMarkers(game.getComputerShots(), canvas.getGraphicsContext2D());
+            // Restaurar los datos en la interfaz
+            playerGrid.setShips(loadedGame.getPlayerShips());
+            playerGrid.setMarkers(loadedGame.getPlayerShots(), canvas.getGraphicsContext2D());
 
+            System.out.println("4");
+            computerGrid.setShips(loadedGame.getComputerShips());
+            computerGrid.setMarkers(loadedGame.getComputerShots(), canvas.getGraphicsContext2D());
+            System.out.println("5");
             // Reasociar marcadores a barcos para el jugador
-            for (Ship ship : playerGrid.getShips()) {
+            for (Ship ship : loadedGame.getPlayerShips()) {
                 for (Position pos : ship.getOccupiedCoordinates()) {
                     playerGrid.getMarkerAtPosition(pos).setAsShip(ship);
                 }
             }
 
             // Reasociar marcadores a barcos para la computadora
-            for (Ship ship : computerGrid.getShips()) {
+            for (Ship ship : loadedGame.getComputerShips()) {
                 for (Position pos : ship.getOccupiedCoordinates()) {
                     computerGrid.getMarkerAtPosition(pos).setAsShip(ship);
                 }
             }
 
-            // Restaurar el resto del estado del juego
-            gamePhase = game.getGamePhase();
-            this.playerName = game.getPlayerName();
 
-            // statusPanel.setTopLine("Bienvenido de nuevo, " + playerName + "!");
-            draw();  // Redibujar el tablero con el estado restaurado
+            // Restaurar nombre del jugador desde archivo externo
+            try (BufferedReader reader = new BufferedReader(new FileReader("player_name.txt"))) {
+                String nameFromFile = reader.readLine();
+                if (nameFromFile != null && !nameFromFile.isEmpty()) {
+                    loadedGame.setPlayerName(nameFromFile);
+                }
+            } catch (IOException e) {
+                System.out.println("No se pudo cargar el nombre del jugador.");
+            }
+
+            draw();
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Devuelve el nombre actual del jugador.
-     * @return Nombre del jugador.
-     */
-    public String getPlayerName() {
-        return playerName;
-    }
 
     //metodo para actualizar los barcos hundidos en la partida
     private void actualizarLabelBarcosHundidos() {

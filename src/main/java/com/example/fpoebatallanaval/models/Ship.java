@@ -1,7 +1,7 @@
 package com.example.fpoebatallanaval.models;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,23 +26,12 @@ public class Ship implements Serializable {
         Placed   // Ya colocado en el tablero (gris o azul si destruido)
     }
 
-    // Posición en la cuadrícula lógica (índices de la celda)
-    private Position gridPosition;
-
-    // Posición en el canvas donde se dibuja el barco (en píxeles)
-    private Position drawPosition;
-
-    // Estado visual del barco (solo usado al colocar)
-    private ShipPlacementColour shipPlacementColour;
-
-    // Número de segmentos que tiene el barco (tamaño)
-    private int segments;
-
-    // Indica si el barco está colocado en orientación horizontal
-    private boolean isSideWays;
-
-    // Contador de secciones que han sido impactadas
-    private int destroyedSections;
+    private Position gridPosition; // Posición en la cuadrícula lógica (índices de la celda)
+    private Position drawPosition; // Posición en el canvas donde se dibuja el barco (en píxeles)
+    private ShipPlacementColour shipPlacementColour; // Estado visual del barco (solo usado al colocar)
+    private int segments; // Número de segmentos que tiene el barco (tamaño)
+    private boolean isSideWays; // Indica si el barco está colocado en orientación horizontal
+    private int destroyedSections; // Contador de secciones que han sido impactadas
 
     /**
      * Constructor del barco.
@@ -67,9 +56,9 @@ public class Ship implements Serializable {
     public void paint(GraphicsContext gc) {
         // Determina el color según el estado del barco
         if (shipPlacementColour == ShipPlacementColour.Placed) {
-            gc.setFill(isDestroyed() ? Color.BLUE : Color.DARKGRAY);
+            gc.setFill(isDestroyed() ? Paint.valueOf("#041257") : Paint.valueOf("#595d70"));
         } else {
-            gc.setFill(shipPlacementColour == ShipPlacementColour.Valid ? Color.GREEN : Color.RED);
+            gc.setFill(Paint.valueOf(shipPlacementColour == ShipPlacementColour.Valid ? "#138537" : "#851326"));
         }
 
         // Dibuja según la orientación
@@ -153,8 +142,6 @@ public class Ship implements Serializable {
     public void setDrawPosition(Position gridPos, Position drawPos) {
         this.gridPosition = gridPos;
         this.drawPosition = drawPos;
-
-
     }
 
     /**

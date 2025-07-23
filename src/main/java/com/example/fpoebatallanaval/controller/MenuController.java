@@ -1,6 +1,8 @@
 package com.example.fpoebatallanaval.controller;
 
 import com.example.fpoebatallanaval.models.AlertHelper;
+import com.example.fpoebatallanaval.models.Game;
+import com.example.fpoebatallanaval.views.GameView;
 import com.example.fpoebatallanaval.views.NicknameView;
 
 import javafx.event.ActionEvent;
@@ -16,6 +18,8 @@ import java.io.IOException;
  * Maneja los eventos de los botones: Nueva Partida, Instrucciones, Cargar Partida, Modo Maestro y Salir.
  */
 public class MenuController {
+
+    Game game = Game.getInstance();
 
     /**
      * Muestra una alerta con las instrucciones del juego al usuario.
@@ -78,14 +82,18 @@ public class MenuController {
      * @param event Evento generado por el botón
      */
     @FXML
-    void onActionButtonCargarPartida(ActionEvent event) {
-        System.out.println("Iniciando juego...");
-        //close current stage
-        // Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        // currentStage.close();
-        //loads the nickname stage
-        // Stage stage = new Stage();
-        // NicknameView.getInstance().show(stage);
+    void onActionButtonCargarPartida(ActionEvent event) throws IOException {
+        System.out.println("Cargando partida...");
+
+        GameController gameController = new GameController();
+        gameController.loadGame();
+
+        // Cargar y mostrar la ventana del juego (patrón Singleton)
+        GameView gameView = GameView.getInstance();
+        gameView.show();
+
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
 
     }
 
@@ -95,8 +103,13 @@ public class MenuController {
      * @param event Evento generado por el botón
      */
     @FXML
-    void onActionButtonModoMaestro(ActionEvent event) {
+    void onActionButtonModoMaestro(ActionEvent event) throws IOException {
         System.out.println("iniciando modo debug ...");
+        game.setMasterMode(true);
+        GameView gameView = GameView.getInstance();
+        gameView.show();
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
     }
 
     /**

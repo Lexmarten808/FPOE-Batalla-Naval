@@ -1,7 +1,7 @@
 package com.example.fpoebatallanaval.models;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 import java.io.Serializable;
 
@@ -16,9 +16,9 @@ public class Marker extends Rectangle implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Colores usados para repersentar el estado visual del marcado
-    private final Color HIT_COLOR = Color.ORANGE;        // Barco impactado
-    private final Color MISS_COLOR = Color.DARKBLUE;      // Disparo fallido
-    private final Color DESTROYED_COLOR = Color.DARKRED; // Barco completamente destruido
+    private final String HIT_COLOR = "#ad480e";        // Barco impactado
+    private final String MISS_COLOR = "#040d57";      // Disparo fallido
+    private final String DESTROYED_COLOR = "#570404"; // Barco completamente destruido
 
     private final int PADDING = 3; // Espaciado visual para dibujar el marcador
 
@@ -92,12 +92,12 @@ public class Marker extends Rectangle implements Serializable {
 
         if (isShip()) {
             if (shipAtMarker.isDestroyed()) {
-                gc.setFill(DESTROYED_COLOR); // Barco destruido
+                gc.setFill(Paint.valueOf(DESTROYED_COLOR)); // Barco destruido
             } else {
-                gc.setFill(HIT_COLOR); // Acierto
+                gc.setFill(Paint.valueOf(HIT_COLOR)); // Acierto
             }
         } else {
-            gc.setFill(MISS_COLOR); // Fallo
+            gc.setFill(Paint.valueOf(MISS_COLOR)); // Fallo
         }
         gc.fillRect(
                 position.x + PADDING + 1,

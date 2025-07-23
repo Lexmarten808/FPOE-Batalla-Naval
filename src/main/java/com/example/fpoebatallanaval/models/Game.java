@@ -1,8 +1,7 @@
 package com.example.fpoebatallanaval.models;
 
+import java.io.*;
 import java.util.List;
-
-import java.io.Serializable;
 
 /**
  * La clase Game representa el estado completo de una partida de Batalla Naval.
@@ -11,93 +10,64 @@ import java.io.Serializable;
  */
 public class Game implements Serializable {
 
-    // Identificador de versión para asegurar compatibilidad durante la serialización
     private static final long serialVersionUID = 1L;
 
-    // Lista de barcos del jugador humano
+    // 1. Instancia única (Singleton)
+    private static Game instance;
+
+    // 2. Constructor privado
+    private Game() {}
+
+    // 3. Método para obtener la instancia
+    public static Game getInstance() {
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
+    }
+
+    private String playerName;
     private List<Ship> playerShips;
-
-    // Lista de barcos de la computadora (IA)
-    private List<Ship> computerShips;
-
-    // Matriz que indica las posiciones donde el jugador ha disparado
     private boolean[][] playerShots;
 
-    // Matriz que indica las posiciones donde la computadora ha disparado
+    private List<Ship> computerShips;
     private boolean[][] computerShots;
 
-    // Nombre del jugador (puede mostrarse en la interfaz o en los resultados)
-    private String playerName;
-
-    // Fase acutal del juego (por ejemplo: colocación de barcos, turno del jugador, eyc.)
-    private com.example.fpoebatallanaval.controller.GameController.GamePhase gamePhase;
+    private String phase;
+    private boolean isMasterMode = false;
 
     // --- Getters y Setters ---
 
-    /**
-     * @return Lista de barcos del jugador
-     */
-    public List<Ship> getPlayerShips() { return playerShips; }
+    public String getPlayerName() { return playerName; }
+    public void setPlayerName(String name) { playerName = name; }
 
-    /**
-     * Asigna la lista de barcos del jugador
-     * @param playerShips Lista de barcos colocados por el jugador
-     */
+    public List<Ship> getPlayerShips() { return playerShips; }
     public void setPlayerShips(List<Ship> playerShips) { this.playerShips = playerShips; }
 
-    /**
-     * @return Lista de barcos del oponente (IA)
-     */
-    public List<Ship> getComputerShips() { return computerShips; }
-
-    /**
-     * Asigna la lista de barcos de la computadora.
-     * @param computerShips Lista de barcos colocados por la IA
-     */
-    public void setComputerShips(List<Ship> computerShips) { this.computerShips = computerShips; }
-
-    /**
-     * @return Matriz que indica las posiciones donde el jugador ha disparado
-     */
     public boolean[][] getPlayerShots() { return playerShots; }
-
-    /**
-     * Asigna la matriz de disparos realizados por el jugddor.
-     * @param playerShots Matriz booleana con marcas de disparos
-     */
     public void setPlayerShots(boolean[][] playerShots) { this.playerShots = playerShots; }
 
-    /**
-     * @return Matriz que indica las posiciones donde la computadora ha disparado
-     */
-    public boolean[][] getComputerShots() { return computerShots; }
+    public List<Ship> getComputerShips() { return computerShips; }
+    public void setComputerShips(List<Ship> computerShips) { this.computerShips = computerShips; }
 
-    /**
-     * Asigna la matriz de disparos realizados por la computadora.
-     * @param computerShots Matriz booleana con marcas de disparos de la IA
-     */
+    public boolean[][] getComputerShots() { return computerShots; }
     public void setComputerShots(boolean[][] computerShots) { this.computerShots = computerShots; }
 
-    /**
-     * @return Nombre del jugador
-     */
-    public String getPlayerName() { return playerName; }
+    public String getPhase() { return phase; }
+    public void setPhase(String phase) { this.phase = phase; }
 
-    /**
-     * Asigna el nombre del jugador.
-     * @param playerName Nombre personalizado ingresado por el usuario
-     */
-    public void setPlayerName(String playerName) { this.playerName = playerName; }
+    public boolean isMasterMode() { return isMasterMode; }
+    public void setMasterMode(Boolean isMasterMode) { this.isMasterMode = isMasterMode; }
 
-    /**
-     * @return Fase actual del juego
-     */
-    public com.example.fpoebatallanaval.controller.GameController.GamePhase getGamePhase() { return gamePhase; }
-
-    /**
-     * Asigna la fase actual del juego.
-     * @param gamePhase Enum que representa la etapa del juego
-     */
-    public void setGamePhase(com.example.fpoebatallanaval.controller.GameController.GamePhase gamePhase) { this.gamePhase = gamePhase; }
+    @Override
+    public String toString() {
+        return "Game{" +
+                "playerName='" + playerName + '\'' +
+                ", phase=" + phase +
+                ", isMasterMode=" + isMasterMode +
+                ", playerShips=" + (playerShips != null ? playerShips.size() : 0) +
+                ", computerShips=" + (computerShips != null ? computerShips.size() : 0) +
+                '}';
+    }
 
 }

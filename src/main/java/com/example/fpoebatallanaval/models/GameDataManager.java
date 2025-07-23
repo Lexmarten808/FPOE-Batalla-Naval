@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameDataManager {
+
     private static final String NICKNAME_FILE = "data/nickname.txt";
     private static final String PLAYER_STATS_FILE = "data/players.txt";
     private static final Map<String, Integer> playerStats = new HashMap<>();
@@ -98,5 +99,6 @@ public class GameDataManager {
     public static boolean playerExists(String nickname) {
         return playerStats.containsKey(nickname);
     }
+
 
 }
