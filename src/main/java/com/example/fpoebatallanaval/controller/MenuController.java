@@ -1,6 +1,8 @@
 package com.example.fpoebatallanaval.controller;
 
 import com.example.fpoebatallanaval.models.AlertHelper;
+import com.example.fpoebatallanaval.models.GameDataManager;
+import com.example.fpoebatallanaval.views.GameView;
 import com.example.fpoebatallanaval.views.NicknameView;
 
 import javafx.event.ActionEvent;
@@ -78,14 +80,22 @@ public class MenuController {
      * @param event Evento generado por el botón
      */
     @FXML
-    void onActionButtonCargarPartida(ActionEvent event) {
+    void onActionButtonCargarPartida(ActionEvent event) throws IOException {
         System.out.println("Iniciando juego...");
-        //close current stage
-        // Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        // currentStage.close();
-        //loads the nickname stage
-        // Stage stage = new Stage();
-        // NicknameView.getInstance().show(stage);
+
+        GameView gameView = GameView.getInstance();
+        gameView.show();
+
+        // Obtener el controlador real del FXML
+        GameController gameController = gameView.getController();
+        gameController.loadGame();
+        if (GameDataManager.getCurrentNickname().equals("Master     ")){
+            gameController.activarModoMaestro();}
+        //cerrar la escena anterior
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
+
+
 
     }
 
@@ -95,9 +105,40 @@ public class MenuController {
      * @param event Evento generado por el botón
      */
     @FXML
-    void onActionButtonModoMaestro(ActionEvent event) {
+    void onActionButtonModoMaestro(ActionEvent event) throws IOException {
         System.out.println("iniciando modo debug ...");
+
+        // Obtener el texto ingresado por el jugador
+        String nickname = "Master     ";
+
+
+        // Guarda el apodo en memoria (uso interno)
+        GameDataManager.saveNickname(nickname);
+
+
+        // Verificar si el jugador ya existe en los registros
+        boolean yaRegistrado = GameDataManager.playerExists(nickname);
+
+        // Si es nuevo, inicializa sus estadísticas con 0 barcos hundidos
+        if (!yaRegistrado) {
+            GameDataManager.updateBarcosHundidos(nickname, 0);
+        }
+
+        // Guarda el apodo y estadísticas en el archivo players.txt
+        GameDataManager.savePlayerStats();
+
+
+        // Cargar y mostrar la ventana del juego (patrón Singleton)
+        GameView gameView = GameView.getInstance();
+        gameView.show();
+
+        // Pass game state to the controller
+
+        // Cerrar la ventana actual (vista del nickname)
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
     }
+
 
     /**
      * Cierra la aplicación al hacer clic en el botón "Salir".

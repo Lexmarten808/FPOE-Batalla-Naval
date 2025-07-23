@@ -81,6 +81,7 @@ public class GameController implements Initializable {
         // Habilitar captuas de teclas
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(event -> handleInput(event.getCode()));
+        if(GameDataManager.getCurrentNickname()=="Master     "){activarModoMaestro();}
     }
 
     /**
@@ -108,11 +109,10 @@ public class GameController implements Initializable {
      */
     private class MouseReleasedHandler implements EventHandler<MouseEvent> {
         @Override
-        public void handle(MouseEvent event) {
+        public void handle(MouseEvent event) {saveGame(GameDataManager.getCurrentNickname());
             System.out.println("Mouse released at: (" + event.getX() + ", " + event.getY() + ")");
             System.out.println("game state: " + gamePhase);
             Position mousePosition = new Position((int) event.getX(), (int) event.getY());
-
             if (gamePhase == GamePhase.PlacingShips && playerGrid.isPositionInside(mousePosition)) {
                 tryPlaceShip(mousePosition);
             } else if (gamePhase == GamePhase.FiringShots && computerGrid.isPositionInside(mousePosition)) {
@@ -133,6 +133,7 @@ public class GameController implements Initializable {
 
             tryMovePlacingShip(new Position((int) event.getX(), (int) event.getY()));
             draw();
+            saveGame(GameDataManager.getCurrentNickname());
         }
     }
 
@@ -502,6 +503,11 @@ public class GameController implements Initializable {
     //metodo para actualizar el total de barcos hundidos por el jugador
     private void actualizarLabelTotalBarcosHundidos() {
         totalBarcosHundidosId.setText("Total Barcos Hundidos: " + GameDataManager.getBarcosHundidos(GameDataManager.getCurrentNickname()));
+    }
+
+    public void activarModoMaestro() {
+        computerGrid.setShowShips(true);
+        draw(); // Redibuja el canvas con los barcos visibles
     }
 
 
