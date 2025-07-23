@@ -11,8 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.net.URL;
@@ -39,9 +37,9 @@ public class GameController implements Initializable {
     private Grid computerGrid;            // Tablero de la computadora
     private Ship placingShip;             // Barco que se está colocando actualmente
     private Position tempPlacingPosition; // Posición temporal para pintar el barco en movimiento
-    private int placingShipIndex;         // Índice del barco que se está colocando
+    private int placingShipIndex;         // indice del barco que se está colocando
     private AI ai;                        // Componente de la IA enemiga
-    private Canvas canvas;                // Área gráfica del juego
+    private Canvas canvas;                // area gráfica del juego
     private String playerName;            // Nombre del jugador
     public static boolean masterMode;     // Modo maestro (debug)
     private int barcosHundidos = 0;       //contador de barcos hundidos en la partida
@@ -82,6 +80,7 @@ public class GameController implements Initializable {
         // Habilitar captuas de teclas
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(event -> handleInput(event.getCode()));
+        if (GameDataManager.getCurrentNickname().equals("Master     ")){activarModoMaestro();}
         if(gamePhase != GamePhase.PlacingShips) {StatusLabel.setVisible(false);}
     }
 
@@ -363,14 +362,11 @@ public class GameController implements Initializable {
             actualizarLabelTotalBarcosHundidos();
 
         }
-        // status panel
         draw();
         saveGame(playerName); // Guardado automático del estado
         if (playerGrid.areAllShipsDestroyed()) {
             gamePhase = GamePhase.GameOver;
 
-
-            // Status panel
         }
     }
 
@@ -436,8 +432,6 @@ public class GameController implements Initializable {
 
 
         }
-
-        // statusPanel.paint(gc);
     }
 
     // ========== Guardar / Cargar ==========
