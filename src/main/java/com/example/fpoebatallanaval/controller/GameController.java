@@ -29,6 +29,7 @@ public class GameController implements Initializable {
     @FXML private Label totalBarcosHundidosId;
     @FXML private Label BarcoshundidosId;
     @FXML private AnchorPane GameCanvasContainer;
+    @FXML private Label StatusLabel;
 
     // ========== Lógica de juego ==========
     public enum GamePhase {PlacingShips, FiringShots, GameOver}
@@ -81,7 +82,7 @@ public class GameController implements Initializable {
         // Habilitar captuas de teclas
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(event -> handleInput(event.getCode()));
-        if(GameDataManager.getCurrentNickname()=="Master     "){activarModoMaestro();}
+        if(gamePhase != GamePhase.PlacingShips) {StatusLabel.setVisible(false);}
     }
 
     /**
@@ -109,17 +110,34 @@ public class GameController implements Initializable {
      */
     private class MouseReleasedHandler implements EventHandler<MouseEvent> {
         @Override
-        public void handle(MouseEvent event) {saveGame(GameDataManager.getCurrentNickname());
+        public void handle(MouseEvent event) {
             System.out.println("Mouse released at: (" + event.getX() + ", " + event.getY() + ")");
             System.out.println("game state: " + gamePhase);
             Position mousePosition = new Position((int) event.getX(), (int) event.getY());
+
+            try {
+                if (gamePhase == GamePhase.PlacingShips && event.getX() >= 440 && event.getX() <= 840) {
+                    throw new GameExceptions.InvalidZoneException("No puedes colocar tus barcos en territorio enemigo.");
+                }
+                if (gamePhase == GamePhase.FiringShots && event.getX() >= 0 && event.getX() <= 400) {
+                    throw new GameExceptions.InvalidZoneException("No puedes atacar tus barcos en territorio aliado.");
+                }
+            } catch (GameExceptions.InvalidZoneException e) {
+                System.out.println("Error: " + e.getMessage());
+                AlertHelper.showErrorAlert("Zona inválida", "No puedes realizar esta acción", e.getMessage());
+                return;
+            }
+
+
             if (gamePhase == GamePhase.PlacingShips && playerGrid.isPositionInside(mousePosition)) {
                 tryPlaceShip(mousePosition);
             } else if (gamePhase == GamePhase.FiringShots && computerGrid.isPositionInside(mousePosition)) {
                 tryFireAtComputer(mousePosition);
             }
             draw();
+            if(gamePhase != GamePhase.PlacingShips) {StatusLabel.setVisible(false);}
         }
+
     }
 
     /**
@@ -133,7 +151,6 @@ public class GameController implements Initializable {
 
             tryMovePlacingShip(new Position((int) event.getX(), (int) event.getY()));
             draw();
-            saveGame(GameDataManager.getCurrentNickname());
         }
     }
 
@@ -215,6 +232,17 @@ public class GameController implements Initializable {
 
         if (playerGrid.canPlaceShipAt(targetPos.x, targetPos.y, Grid.BOAT_SIZES[placingShipIndex], placingShip.isSideWays())) {
             placeShip(targetPos);
+        }
+        else {
+            try {
+                if (!playerGrid.canPlaceShipAt(targetPos.x, targetPos.y, Grid.BOAT_SIZES[placingShipIndex], placingShip.isSideWays())) {
+                    throw new GameExceptions.CantPlaceShip("no puedes colocar el barco aqui, elije una posicion valida");
+                }
+
+            } catch (GameExceptions.CantPlaceShip e) {
+                System.out.println(e.getMessage());
+                AlertHelper.showErrorAlert("Movimiento inválido", "No puedes realizar esta acción", e.getMessage());
+            }
         }
     }
 
@@ -481,6 +509,7 @@ public class GameController implements Initializable {
 
             // statusPanel.setTopLine("Bienvenido de nuevo, " + playerName + "!");
             draw();  // Redibujar el tablero con el estado restaurado
+            if(gamePhase != GamePhase.PlacingShips) {StatusLabel.setVisible(false);}
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -504,7 +533,6 @@ public class GameController implements Initializable {
     private void actualizarLabelTotalBarcosHundidos() {
         totalBarcosHundidosId.setText("Total Barcos Hundidos: " + GameDataManager.getBarcosHundidos(GameDataManager.getCurrentNickname()));
     }
-
     public void activarModoMaestro() {
         computerGrid.setShowShips(true);
         draw(); // Redibuja el canvas con los barcos visibles

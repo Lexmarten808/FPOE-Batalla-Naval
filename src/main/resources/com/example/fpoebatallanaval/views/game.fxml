@@ -5,6 +5,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="600.0" maxWidth="1000.0" minHeight="600.0" minWidth="1000.0" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fpoebatallanaval.controller.GameController">
@@ -30,7 +31,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="680.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Agua ❌ " textFill="WHITESMOKE">
+      <Label layoutX="680.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Agua " textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -38,7 +39,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="780.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Tocado 💣" textFill="WHITESMOKE">
+      <Label layoutX="780.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Tocado " textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -46,7 +47,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label layoutX="880.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Hundido 🔥" textFill="WHITESMOKE">
+      <Label layoutX="880.0" layoutY="540.0" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #1E3D59; -fx-background-radius: 10;" text=" Hundido " textFill="WHITESMOKE">
          <effect>
             <Glow />
          </effect>
@@ -63,5 +64,16 @@
          </font>
       </Label>
       <AnchorPane fx:id="GameCanvasContainer" layoutX="80.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0" />
+      <Label fx:id="StatusLabel" layoutX="280.0" layoutY="495.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #3b2105; -fx-background-radius: 10;" text=" Presiona &quot;X&quot; para rotar el barco!" textFill="WHITESMOKE">
+         <effect>
+            <Glow />
+         </effect>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8ff00" height="12.0" layoutX="830.0" layoutY="550.0" stroke="BLACK" strokeType="INSIDE" width="12.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff1f1f" height="12.0" layoutX="938.0" layoutY="550.0" stroke="BLACK" strokeType="INSIDE" width="12.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="12.0" layoutX="720.0" layoutY="550.0" stroke="BLACK" strokeType="INSIDE" width="12.0" />
    </children>
 </AnchorPane>
